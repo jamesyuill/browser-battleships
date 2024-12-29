@@ -6,12 +6,14 @@ const shipArray = [];
 const screenWidth = window.screen.availWidth;
 const screenHeight = window.screen.availHeight;
 const message = document.getElementById('message');
+const buttonDiv = document.getElementById('buttons');
 
 //Start Button
 const startButton = document.getElementById('start-button');
 
 startButton.addEventListener('click', () => {
   console.log('game started');
+  buttonDiv.remove(startButton);
   isGameRunning = true;
   displayShips(5);
   gameLoop();
@@ -98,6 +100,7 @@ const doesBombIntersect = (shipPos, bombPos) => {
   }
 };
 
+//countdown to bomb time!
 const countDown = () => {
   let seconds = 5;
 
@@ -112,3 +115,6 @@ const countDown = () => {
     }
   }, 1000);
 };
+
+//closes all open windows
+function closeAllWindows() {}
