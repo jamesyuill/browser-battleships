@@ -7,13 +7,21 @@ const screenWidth = window.screen.availWidth;
 const screenHeight = window.screen.availHeight;
 const message = document.getElementById('message');
 const buttonDiv = document.getElementById('buttons');
+const instructionsDiv = document.getElementById('instructions');
+const resetButton = document.getElementById('reset');
 
 //Start Button
 const startButton = document.getElementById('start-button');
 
 startButton.addEventListener('click', () => {
   console.log('game started');
-  buttonDiv.remove(startButton);
+  buttonDiv.removeChild(startButton);
+
+  const instructions = document.createElement('p');
+  instructions.className = 'message';
+  instructions.innerHTML = '<p>Position your ships</p>';
+  instructionsDiv.append(instructions);
+
   isGameRunning = true;
   displayShips(5);
   gameLoop();
@@ -48,11 +56,26 @@ function gameLoop() {
       const isAHit = doesBombIntersect(ship, bomb);
       if (isAHit) {
         message.innerText = 'I hit your ship!';
+        isGameRunning = false;
       }
     }
   }
 
-  requestAnimationFrame(gameLoop);
+  if (!isGameRunning) {
+    let resetWindow = window.open(
+      'reset.html',
+      '',
+      `width=200,height=200,left=${screenWidth / 2},top=${screenHeight / 2}`
+    );
+    resetWindow.addEventListener('click', () => {
+      closeAllWindows(shipArray);
+      closeAllWindows(bombArray);
+      resetWindow.close();
+    });
+  }
+  if (isGameRunning) {
+    requestAnimationFrame(gameLoop);
+  }
 }
 
 function fireBomb() {
@@ -112,9 +135,14 @@ const countDown = () => {
     if (seconds === 0) {
       clearInterval(timer);
       message.innerText = "You're lucky this time!";
+      isGameRunning = false;
     }
   }, 1000);
 };
 
 //closes all open windows
-function closeAllWindows() {}
+function closeAllWindows(windowArray) {
+  for (const window in windowArray) {
+    windowArray[window].close();
+  }
+}
