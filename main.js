@@ -2,8 +2,8 @@ let isGameRunning = false;
 let didBombHit = false;
 let bombsAway = 0;
 let secondsDelay = 7000;
-const bombArray = [];
-const shipArray = [];
+let bombArray = [];
+let shipArray = [];
 const screenWidth = window.screen.availWidth;
 const screenHeight = window.screen.availHeight;
 const message = document.getElementById('message');
@@ -55,11 +55,14 @@ function gameLoop() {
     let shipY = shipArray[i].screenY;
     let ship = { x: shipX, y: shipY };
     if (bombArray.length) {
+      isGameRunning = false;
+
       let bomb = { x: bombArray[0].screenX, y: bombArray[0].screenY };
       const isAHit = doesBombIntersect(ship, bomb);
       if (isAHit) {
         instructions.innerHTML = '<p>I hit your ship!</p>';
-        isGameRunning = false;
+      } else {
+        instructions.innerHTML = '<p>You be lucky this time!</p>';
       }
     }
   }
@@ -73,7 +76,12 @@ function gameLoop() {
     resetWindow.addEventListener('click', () => {
       closeAllWindows(shipArray);
       closeAllWindows(bombArray);
+      shipArray = [];
+      bombArray = [];
+      bombsAway = 0;
       resetWindow.close();
+      instructions.innerHTML = '';
+      buttonDiv.appendChild(startButton);
     });
   }
   if (isGameRunning) {
@@ -119,7 +127,7 @@ const doesBombIntersect = (shipPos, bombPos) => {
   }
 
   if (intersectingOnX && intersectingOnY) {
-    console.log('we have a hit bitch!');
+    console.log('we got one!!');
     return true;
   } else {
     return false;
